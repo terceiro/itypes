@@ -3,7 +3,7 @@ from collections import Mapping, Sequence
 import weakref
 
 
-__version__ = '1.1.0'
+__version__ = '1.2.0'
 
 _dict_store = weakref.WeakKeyDictionary()
 _list_store = weakref.WeakKeyDictionary()
