@@ -76,6 +76,13 @@ Methods: `set_in(keys, value)`, `delete_in(keys)`
     >>> d == {'a': 1, 'b': 2, 'c': 3}
     True
 
+### Identity can be compared.
+
+    >>> a = itypes.Dict({'a': 1, 'b': 2, 'c': 3})
+    >>> b = itypes.Dict({'a': 1, 'b': 2, 'c': 3})
+    >>> a is b
+    True
+
 ### Objects are hashable.
 
     >>> hash(d)

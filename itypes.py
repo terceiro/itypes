@@ -1,8 +1,12 @@
 # coding: utf-8
 from collections import Mapping, Sequence
+import weakref
 
 
 __version__ = '1.1.0'
+
+_dict_store = weakref.WeakKeyDictionary()
+_list_store = weakref.WeakKeyDictionary()
 
 
 def to_mutable(instance):
@@ -35,10 +39,10 @@ def _to_hashable(instance):
             for key, value in items
         )
     elif isinstance(instance, List):
-        return [
+        return (
             _to_hashable(value)
             for value in instance
-        ]
+        )
     return instance
 
 
@@ -96,11 +100,21 @@ class Object(object):
 
 
 class Dict(Mapping):
-    def __init__(self, *args, **kwargs):
-        self._data = {
+    def __new__(cls, *args, **kwargs):
+        global _dict_store
+        instance = super(Dict, cls).__new__(cls)
+        # Initialize the instance.
+        instance._data = {
             key: to_immutable(value)
             for key, value in dict(*args, **kwargs).items()
         }
+        # Determine if we already have it in memory, and return the
+        # existing instance if so.
+        try:
+            return _dict_store[instance]
+        except KeyError:
+            _dict_store[instance] = instance
+            return instance
 
     def __setattr__(self, key, value):
         if key.startswith('_'):
@@ -159,11 +173,21 @@ class Dict(Mapping):
 
 
 class List(Sequence):
-    def __init__(self, *args):
-        self._data = [
+    def __new__(cls, *args, **kwargs):
+        global _list_store
+        instance = super(List, cls).__new__(cls)
+        # Initialize the instance.
+        instance._data = [
             to_immutable(value)
             for value in list(*args)
         ]
+        # Determine if we already have it in memory, and return the
+        # existing instance if so.
+        try:
+            return _list_store[instance]
+        except KeyError:
+            _list_store[instance] = instance
+            return instance
 
     def __setattr__(self, key, value):
         if key == '_data':
