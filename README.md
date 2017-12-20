@@ -151,3 +151,8 @@ Using immutable objects:
     'Immutability'
     >>> doc.title = 'Changed'
     TypeError: 'Document' object doesn't support property assignment.
+
+### Copyright and license
+
+Copyright (c) Tom Christie <tom@tomchristie.com>. This package is distributed
+under the 3-clause BSD license. See LICENSE.TXT for the full license text.
